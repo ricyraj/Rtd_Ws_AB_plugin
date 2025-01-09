@@ -25,5 +25,5 @@
 
 # .
 ## Licenses / Copyrights / Trademarks
-##### This work incorporates materials copyrighted and trademarked by Amibroker Company.
-Amibroker and the Amibroker logo are trademarks of Amibroker Company, used with permission.
+##### This work incorporates materials copyrighted and trademarked by AmiBroker Company.
+AmiBroker and the AmiBroker logo are trademarks of AmiBroker Company, used with permission.
