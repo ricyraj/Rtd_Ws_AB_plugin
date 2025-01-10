@@ -86,6 +86,7 @@ cd \path\to\server
 py sample_Server.py
 ```
 [![img sample_server1](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/sample_s1.png?raw=true)]
+
 [![img sample_server1](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/sample_s2.png?raw=true)]
 
 **When Data Plug-in connects to the server**
