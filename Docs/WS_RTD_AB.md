@@ -58,6 +58,7 @@ set: Number of bars
 Base time interval: 1 minute or as suited
 ```
 *To-Do: Enabling seconds(timeframe) in next iteration. Tick-data unsupported for now*
+
 [![img create](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/DB_Create.png?raw=true)]
 
 ##### Configure the Plug-in
@@ -88,6 +89,7 @@ py sample_Server.py
 [![img sample_server1](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/sample_s2.png?raw=true)]
 
 **When Data Plug-in connects to the server**
+
 [![img baloon1](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/Plugin_baloon_OK.png?raw=true)
 
 
@@ -195,6 +197,7 @@ the existing bars are overwritten, from first bar of hist.
 old_data + WS_data
 Now, backfill means old_data + backfill (upto last backfill)
 then, old_data + backfill_data + Rt_data ( from bars after last backfill bar, if any )
+
 [![img sample_server1](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/Plugin_menu.png?raw=true)
 
 ##### Backfill style-02 *To-do:*
@@ -400,6 +403,7 @@ C:\sample1\wsrtd
 ```
 *Data2 and wsrtd will be a new entries and each can have its own settings*
 Image of Windows Registry below:
+
 [![img sample_server1](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/TJP_Registry.png?raw=true)]
 
 
@@ -453,6 +457,7 @@ Ensure that under Symbol Information window in Amibroker, the setting "Use local
 
 #### 4) How do I ADD symbols in AmiBroker?
 When new symbols arrrive in the plugin-DB, the plugin status will be dark Green in colour. You can go to Configure settings Dialog and Click RETRIEVE Button. Symbols will automatically get added.
+
 [![Retrieve](https://raw.githubusercontent.com/ideepcoder/Rtd_Ws_AB_plugin/refs/heads/main/images/help/Retrieve.png)]
 
 #### 5) 
