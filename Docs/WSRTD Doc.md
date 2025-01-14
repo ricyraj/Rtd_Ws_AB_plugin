@@ -68,6 +68,12 @@ Click Configure button
 
 [![img configure](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/Plugin_Configure.png?raw=true)]
 
+The internal plug-in DB stores RTD Quotes as a RING BUFFER. Max_Num_Sym_Quotes here means the number of bars to hold. If you run Analysis frequently and ensure all symbols are accessed, then you can set it as low as 10 to reduce memory usage. Each bar is 40 KB.
+
+#### Important Settings change:
+1. **Max_Num_SYM_Quotes** : Requires AB restart
+2. ***Changes in IP / Port / AUTH** : Requires Plugin shutdown / connect, ie. Reconnect. 
+
 ##### The Sample Server
 ensure these Python packages are installed and their dependencies
 ```sh
@@ -141,6 +147,7 @@ v, oi, x1, x2 = optional and set to 0 if absent
 Realtime Quote window variables are optional, but they
 are required for this feature to work properly.
 ```
+Using d,t is more efficient over u,g as 1 step less in conversion and should be preferred if available.
 
 ### 2) History format in json message
 Parse a history data JSON string that is used to backfill a Ticker
@@ -214,7 +221,7 @@ Work in progress, subject to change.
 >( The only exceptions is json-RTD and json-HIST formats.)
 
 > Plug-in will respond with **Acknowledgement TO Server** for all code=300 Server-side REQUESTS with json-ACK "ack" with server-request, "arg" with description and "code" which is integer
-> Code values for OK=200, and OTHER/BAD=400
+> Code values for OK=200 to 299, and OTHER/BAD=400 to 499. Specific codes are not interpreted currently.
 
 
 #### 3.1) Request CMD from plugin to "Server"
@@ -265,6 +272,7 @@ Mandatory code field
 #### 3.3) Request CMD "to WS_RTD" Plug-in "from" Server
 Mandatory code=300
 {"cmd":"request_cmd","code":300,"arg":"request_arg"}
+
 ##### a) REMOVE or DELETE a Symbol "IN" plug-in Database
 {"cmd":"dbremsym","code":300,"arg":"SYMBOL_NAME"}
 Case-sensitive match
@@ -274,6 +282,7 @@ This is useful to FREE memory in the plug-in DB
 returns {"ack","code":200."arg":"SYM9 removed from DB"}     /* success */
 returns {"ack","code":400,"arg":"SYM9 NOT found in DB")     /* failure */
 ```
+
 ##### b) Get the List of Symbols in Plug-in Database
 {"cmd":"dbgetlist","code":300,"arg":""}
 "arg" field required, can set empty or some string description
@@ -282,6 +291,7 @@ returns a comma-string of symbols
 {"cmd":"dbgetlist","code":300,"arg":"DB Symbol list requested at 14:56:00"}
 returns {"ack":"dbgetlist","code":200,"arg"="AA,AAPL,AXP,BA,C,CAT,IBM,INTC,"}
 ```
+
 ##### c) Get the Base Time Interval of Plug-in Database
 {"cmd":"dbgetbase","code":300,"arg":""}
 "arg" field required, can set empty
@@ -289,6 +299,16 @@ returns a STRING with base time interval in seconds(convert to INT)
 ```sh
 {"cmd":"dbgetbase","code":300,"arg":"DB Symbol list requested at 14:56:00"}
 returns {"ack":"dbgetbase","code":200,"arg"="60"}
+```
+
+##### d) Get the DB Status of Plug-in Database
+{"cmd":"dbstatus","code":300,"arg":""}
+"arg" field required, can set empty
+returns a STRING with Format as ( convert to INT )
+Current_Sym_Count, Max_Sym_Limit, Max_Size_Sym_Quotes, Refresh_Interval, Base_Interval
+```sh
+{"cmd":"dbstatus","code":300,"arg":"DB Status requested at 14:56:00"}
+returns {"ack":"dbstatus","code":200,"arg"="500 1000 200 300 60"}
 ```
 
 ### 4) ACK format in json message
@@ -461,7 +481,13 @@ When new symbols arrrive in the plugin-DB, the plugin status will be dark Green 
 
 [![Retrieve](https://raw.githubusercontent.com/ideepcoder/Rtd_Ws_AB_plugin/refs/heads/main/images/help/Retrieve.png)]
 
-#### 5) 
+The status color will change to &#128994; from $${\color{ForestGreen}Dark \space Green}$$
+
+#### 5) Settings change in Configure
+Kindly use DebugView to check if settings change requires an AB to be restarted or Plugin to be reconnect. Scroll up to Configure section and read the details.
+
+
+
 <here>
 
 ## Development
@@ -504,7 +530,6 @@ https://github.com/Tencent/rapidjson
 License: MIT  
 Credits: Milo Yip  
 RapidJson is benchmarked as fastest.
-RapidJson provides in-situ parsing.
 
 ## WS Class and Queue inspiration
 https://stackoverflow.com/a/69054531, Credits: Jerry Coffin 
