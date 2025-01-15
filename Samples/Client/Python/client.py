@@ -51,8 +51,9 @@ maXTicks = 50     ## maximum concurrent ticks Try 1000 :) no problem
 
 ''' Globals '''
 stop_flag   = False
-addrem_list = []        ## simulate add and remove symbol command
-sock_send_Q = Queue()   ## Queue used for websocket send
+addrem_list = []            ## simulate add and remove symbol command
+sock_send_Q = Queue()       ## Queue used for websocket send. Assumes only 1 Remote source. Else move to Handler
+sock_recv_Q = Queue()       ## incomging Queue buffer. Assumes only 1 Remote source. Else move to Handler
 
 def r(l=1,u=9): return random.randint(l, u)
 
@@ -71,10 +72,12 @@ async def ws_client():
         v1=v2=v3=0
         pTm = 0
 
-        try:    await websocket.send("rolesend")
-        except: pass
+        try:    await websocket.send( "rolesend" )
+        except: raise websockets.ConnectionClosed( None, None )
 
-        asyncio.create_task( recv( websocket))
+        asyncio.create_task( recv( websocket) )
+
+        asyncio.create_task( process_recv_Q() )
 
         ## IF TRUE, This part is for testing commands and the RTD GEnerator
         ## Testing commands tcmd1 or tcmd2, IF either True, Scripts exits after sending commmand
@@ -102,6 +105,9 @@ async def ws_client():
 
         ## END testing commands
         
+        ## Put code for BROKER / VENDOR Library in this while loop,
+        ## or create task and await here. It varies depending on their Library
+
         while not stop_flag:
             try:
                 dt   = datetime.datetime.now()
@@ -161,74 +167,18 @@ async def ws_client():
 # Use a Queue for generator data to push, and send to pop,
 # and another for recv(). Then it is truly async
 
-## Recv() is blocking while processing
-## in production, push requests to Queue and process asynchronously
-## should not block or use same thread to process requests 
+## Recv() is non-blocking, requests are pushed into Queue
 
 async def recv( websocket):
-    global stop_flag
+    global stop_flag, sock_recv_Q
     try:
         while not stop_flag:
             try:
                 async with asyncio.timeout(delay=0.5):
                     mr = await websocket.recv()
-                    print(mr)
-                    if mr == "zzc":
-                        print(f"kill sig rec'd")
-                        stop_flag = True        # stop all loops
-                        await asyncio.sleep(1)  # wait task complete
-
                     try:
-                        jo = json.loads( mr )
-                        if 'cmd' in jo:
-                            if 'arg' in jo:
-                                if jo['cmd']=='bfall':
-                                    print( f"bfall cmd in {mr}")
-                                elif jo['cmd'] in ['bfauto', "bffull"]:
-                                    print( f"bfauto/bffull cmd in {mr}")
-                                    
-                                    sym = jo['arg'] if ' ' not in jo['arg'] else (jo['arg'].split(' '))[0]
-                                    jo['arg'] = f"y {sym} 5" if jo['cmd']=='bfull' else f"y {sym} 2"
-                                    
-                                    try:
-                                        sock_send_Q.put( some_historical_data( jo ) )  #; print( ret )
-                                    except Full: print(f"recv() Ex: send.Q full"); pass
-
-                                    jo['sym'] = "addsym"
-                                    jo['arg'] = sym
-                                    add_symbol( jo )
-
-                                elif jo['cmd'] == 'bfsym':
-                                    #hist_Q.put( jo )    ## real code should use Queue as buffer, separate thread/async
-                                    ##  jo = {"cmd":"bfsym", "arg":"y SYM1 3 1"}
-                                    try:
-                                        sock_send_Q.put( some_historical_data( jo ) )  #; print( ret )
-                                    except Full: print(f"recv() Ex: send.Q full"); pass
-                                    print( f"sent response\n{jo}" )
-                                
-                                elif jo['cmd'] == "addsym":
-                                    try:
-                                        jr = add_symbol( jo )
-                                        sock_send_Q.put( jr )  #; print( ret )
-                                    except Full: print(f"recv() Ex: send.Q full"); pass
-                                    print( f"sent response\n{jr}" )
-
-                                elif jo['cmd'] == "remsym":
-                                    try:
-                                        jr = rem_symbol( jo )
-                                        sock_send_Q.put( jr )  #; print( ret )
-                                    except Full: print(f"recv() Ex: send.Q full"); pass
-                                    print( f"sent response\n{jr}" )
-
-                                else:   print( f"unknown cmd in {mr}")
-                            
-                            else:   print( f"arg not found in {mr}")
-                        
-                        else:   print( f"jo={mr}")
-
-                    except ValueError as e:
-                        #print(e)       ## if not JSON
-                        print( mr )
+                        sock_recv_Q.put_nowait( mr )
+                    except Full: pass
 
             # client disconnected?
             except asyncio.TimeoutError:        pass
@@ -237,6 +187,9 @@ async def recv( websocket):
     except BaseException as b:  print(f"recv() bEx: {b}");          return
 
 
+'''
+Implement Broker/Vendor Backfill process here
+'''
 def some_historical_data( jo ):
     '''simulate some historical data'''
 
@@ -324,7 +277,7 @@ def some_historical_data( jo ):
         return repr(e)
 
 
-## simulate subscribe
+## simulate subscribe new symbol in Remote Server
 def add_symbol( jo ):
     global addrem_list
 
@@ -342,7 +295,7 @@ def add_symbol( jo ):
     return json.dumps( jr, separators=(',', ':') )
 
 
-## simulate unsubscribe
+## simulate unsubscribe symbool from remote server
 def rem_symbol( jo ):
     global addrem_list
 
@@ -360,12 +313,87 @@ def rem_symbol( jo ):
     return json.dumps( jr, separators=(',', ':') )
 
 
+'''
+Receive() Websocket is asynchronous. This means requests do NOT block the websocket.
+Messages are pushed into sock_recv_Q Queue, and this async task will process them at
+its own pace. This will prevent RATE LIMITS being hit by Broker/Vendor.
+'''
+async def process_recv_Q():
+    global stop_flag, sock_recv_Q    
+
+    while not stop_flag:
+        try:
+            mr = sock_recv_Q.get_nowait()
+        except Empty:
+            await asyncio.sleep( 0.2 )      ## prevent hot loop
+            continue
+
+        print(mr)
+        if mr == "zzc":
+            print(f"kill sig rec'd")
+            stop_flag = True        # stop all loops
+            await asyncio.sleep(1)  # wait task complete
+
+        try:
+            jo = json.loads( mr )
+            if 'cmd' in jo:
+                if 'arg' in jo:
+                    if jo['cmd']=='bfall':
+                        print( f"bfall cmd in {mr}")
+                    elif jo['cmd'] in ['bfauto', "bffull"]:
+                        print( f"bfauto/bffull cmd in {mr}")
+                        
+                        sym = jo['arg'] if ' ' not in jo['arg'] else (jo['arg'].split(' '))[0]
+                        jo['arg'] = f"y {sym} 5" if jo['cmd']=='bfull' else f"y {sym} 2"
+                        
+                        try:
+                            sock_send_Q.put( some_historical_data( jo ) )  #; print( ret )
+                        except Full: print(f"recv() Ex: send.Q full"); pass
+
+                        jo['sym'] = "addsym"
+                        jo['arg'] = sym
+                        add_symbol( jo )
+
+                    elif jo['cmd'] == 'bfsym':
+                        #hist_Q.put( jo )    ## real code should use Queue as buffer, separate thread/async
+                        ##  jo = {"cmd":"bfsym", "arg":"y SYM1 3 1"}
+                        try:
+                            sock_send_Q.put( some_historical_data( jo ) )  #; print( ret )
+                        except Full: print(f"recv() Ex: send.Q full"); pass
+                        print( f"sent response\n{jo}" )
+                    
+                    elif jo['cmd'] == "addsym":
+                        try:
+                            jr = add_symbol( jo )
+                            sock_send_Q.put( jr )  #; print( ret )
+                        except Full: print(f"recv() Ex: send.Q full"); pass
+                        print( f"sent response\n{jr}" )
+
+                    elif jo['cmd'] == "remsym":
+                        try:
+                            jr = rem_symbol( jo )
+                            sock_send_Q.put( jr )  #; print( ret )
+                        except Full: print(f"recv() Ex: send.Q full"); pass
+                        print( f"sent response\n{jr}" )
+
+                    else:   print( f"unknown cmd in {mr}")
+                
+                else:   print( f"arg not found in {mr}")
+            
+            else:   print( f"jo={mr}")
+
+        except ValueError as e:
+            #print(e)       ## if not JSON
+            print( mr )
+
+
+
 
 def main():
     global stop_flag
     try:
         # Start the connection
-        asyncio.run(ws_client())
+        asyncio.run( ws_client() )
 
     except KeyboardInterrupt:   print(f"KB exit"); stop_flag = True
     except Exception as e:      print(f"main() Ex {e}"); stop_flag = True
