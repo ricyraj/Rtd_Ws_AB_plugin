@@ -75,9 +75,9 @@ async def ws_client():
         try:    await websocket.send( "rolesend" )
         except: raise websockets.ConnectionClosed( None, None )
 
-        asyncio.create_task( recv( websocket) )
-
         asyncio.create_task( process_recv_Q() )
+
+        asyncio.create_task( recv( websocket) )
 
         ## IF TRUE, This part is for testing commands and the RTD GEnerator
         ## Testing commands tcmd1 or tcmd2, IF either True, Scripts exits after sending commmand
