@@ -7,7 +7,7 @@
 // WsRTD data plugin connects to the relay server via specified IP:Port, and this client
 // also connects to the relay server.
 //
-// This program is NOT meant for PRODUCTION USE. It is just a tester script.
+// This program is a template for PRODUCTION USE.
 //
 ///////////////////////////////////////////////////////////////////////
 // Author: NSM51
