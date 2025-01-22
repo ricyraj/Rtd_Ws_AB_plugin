@@ -222,7 +222,7 @@ Code values for OK=200, and OTHER/BAD=400</p>
 Code values for OK=200 to 299, and OTHER/BAD=400 to 499. Specific codes are not interpreted currently.</p>
 </blockquote>
 <h4 class="code-line" data-line-start=226 data-line-end=227 ><a id="31_Request_CMD_from_plugin_to_Server_226"></a>3.1) Request CMD from plugin to “Server”</h4>
-<h5 class="code-line" data-line-start=228 data-line-end=229 ><a id="a_First_Access_automatic_symbol_backfill_request_228"></a>a) First Access automatic symbol backfill request</h5>
+<h5 class="code-line" data-line-start=228 data-line-end=229 ><a id="a_First_Access_automatic_symbol_backfill_request_use_as_SUBSCRIBE_signal_228"></a>a) First Access automatic symbol backfill request (use as SUBSCRIBE signal)</h5>
 <p class="has-line-data" data-line-start="229" data-line-end="232">This is a special automatic backfill request command that is sent to the server when a symbol is accessed in Amibroker for the first time. Server can choose to ignore this request or respond with a json-History backfill data of a desired period.<br>
 {“cmd”:“bfauto”,“arg”:“SYMBOL_NAME DateNum TimeNum”}  last Quote timestamp sent when symbol has some data<br>
 {“cmd”:“bffull”,“arg”:“SYMBOL_NAME”}  sent when symbol has NO data</p>

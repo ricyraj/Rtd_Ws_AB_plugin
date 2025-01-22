@@ -226,7 +226,7 @@ Work in progress, subject to change.
 
 #### 3.1) Request CMD from plugin to "Server"
 
-##### a) First Access automatic symbol backfill request
+##### a) First Access automatic symbol backfill request ( use as SUBSCRIBE signal )
 This is a special automatic backfill request command that is sent to the server when a symbol is accessed in Amibroker for the first time. Server can choose to ignore this request or respond with a json-History backfill data of a desired period.
 {"cmd":"bfauto","arg":"SYMBOL_NAME DateNum TimeNum"}  last Quote timestamp sent when symbol has some data
 {"cmd":"bffull","arg":"SYMBOL_NAME"}  sent when symbol has NO data
