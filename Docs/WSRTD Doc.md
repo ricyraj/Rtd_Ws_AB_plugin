@@ -215,7 +215,7 @@ Inserting historical data into AmiBroker Database
 Work in progress, subject to change.
 > ALL REQUESTS made by **plug-in TO** Server have only "cmd" and "arg fields"
 > Server should REPLY to all above REQUESTS with same "cmd" and "arg" fields. Additionally inserting the "code" which is integer.
-> Code values for OK=200, and OTHER/BAD=400
+> Code values for OK=200 to 299, and OTHER/BAD=400 to 499. Specific codes are not defined yet.
 
 > ALL REQUESTS made by **Server To** Plug-in will have valid "cmd" and "arg" fields. Additionally, all SERVER-side requests will have code=300 which is integer.
 >( The only exceptions is json-RTD and json-HIST formats.)
@@ -336,7 +336,7 @@ R"({"hist")"   // Historical Data
 Explained here [Amibroker Forum](https://forum.amibroker.com/t/documentation-on-batch-data-plugin-command/39269)
 Amibroker [Batch window manual](https://www.amibroker.com/guide/h_batch.html)
 
-Every time the Plug-in receives data, it stores is internally in its own temporary storage and notifies Amibroker of new data. Unfortunately, by design, if the Symbol is not being used by the user is anyway, the plug-in may never be able to "push" the data to AB local Database that is persistent.
+Every time the Plug-in receives data, it stores is internally in its own temporary storage and notifies Amibroker of new data. Unfortunately, by design, if the Symbol is not being used by the user in any way, the plug-in may never be able to "push" the data to AB local Database that is persistent.
 Therefore, user needs to use a Batch file that consists of an empty Analysis Exploration to force all symbols to fetch data. More on this later.
 
 These are some ways to communicate with the Plug-in from the Amibroker User-Interface OR when the websocket is shutdown and therefore not reachable externally.
