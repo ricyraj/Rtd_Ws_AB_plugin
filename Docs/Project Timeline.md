@@ -24,5 +24,5 @@ https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Samples/Client/Python/c
 ##### 20250119 - Added Python General Class Wrapper for Vendor/Broker Library
 https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Samples/Client/Python/vendor_class_wrapper.py
 ##### 20250128 - Added Python utility script to Validate RTD Json
-https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Utility%20Scripts/Client/Python/json_validator.py
+https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Utility%20Scripts/Python/json_validator.py
 
