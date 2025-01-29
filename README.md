@@ -23,6 +23,9 @@
 ## Documentation and manual
 ### -- Check Docs for the latest documentation
 
+#### [Main Documentation](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Docs/WSRTD%20Doc.md)
+#### [Project Timeline](https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Docs/Project%20Timeline.md)
+
 # .
 ## Licenses / Copyrights / Trademarks
 ##### This work incorporates materials copyrighted and trademarked by AmiBroker Company.
