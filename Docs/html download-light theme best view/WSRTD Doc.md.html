@@ -211,7 +211,7 @@ then, old_data + backfill_data + Rt_data ( from bars after last backfill bar, if
 <blockquote>
 <p class="has-line-data" data-line-start="215" data-line-end="218">ALL REQUESTS made by <strong>plug-in TO</strong> Server have only “cmd” and “arg fields”<br>
 Server should REPLY to all above REQUESTS with same “cmd” and “arg” fields. Additionally inserting the “code” which is integer.<br>
-Code values for OK=200, and OTHER/BAD=400</p>
+Code values for OK=200 to 299, and OTHER/BAD=400 to 499. Specific codes are not defined yet.</p>
 </blockquote>
 <blockquote>
 <p class="has-line-data" data-line-start="219" data-line-end="221">ALL REQUESTS made by <strong>Server To</strong> Plug-in will have valid “cmd” and “arg” fields. Additionally, all SERVER-side requests will have code=300 which is integer.<br>
@@ -222,7 +222,7 @@ Code values for OK=200, and OTHER/BAD=400</p>
 Code values for OK=200 to 299, and OTHER/BAD=400 to 499. Specific codes are not interpreted currently.</p>
 </blockquote>
 <h4 class="code-line" data-line-start=226 data-line-end=227 ><a id="31_Request_CMD_from_plugin_to_Server_226"></a>3.1) Request CMD from plugin to “Server”</h4>
-<h5 class="code-line" data-line-start=228 data-line-end=229 ><a id="a_First_Access_automatic_symbol_backfill_request_use_as_SUBSCRIBE_signal_228"></a>a) First Access automatic symbol backfill request (use as SUBSCRIBE signal)</h5>
+<h5 class="code-line" data-line-start=228 data-line-end=229 ><a id="a_First_Access_automatic_symbol_backfill_request__use_as_SUBSCRIBE_signal__228"></a>a) First Access automatic symbol backfill request ( use as SUBSCRIBE signal )</h5>
 <p class="has-line-data" data-line-start="229" data-line-end="232">This is a special automatic backfill request command that is sent to the server when a symbol is accessed in Amibroker for the first time. Server can choose to ignore this request or respond with a json-History backfill data of a desired period.<br>
 {“cmd”:“bfauto”,“arg”:“SYMBOL_NAME DateNum TimeNum”}  last Quote timestamp sent when symbol has some data<br>
 {“cmd”:“bffull”,“arg”:“SYMBOL_NAME”}  sent when symbol has NO data</p>
@@ -233,232 +233,254 @@ Code values for OK=200 to 299, and OTHER/BAD=400 to 499. Specific codes are not 
 <p class="has-line-data" data-line-start="238" data-line-end="239">{“cmd”:“bfsym”,“arg”:“reserved SYMBOL_NAME int_preset”}</p>
 <pre><code class="has-line-data" data-line-start="240" data-line-end="242" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"bfsym"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"y SYM1 3"</span>}
 </code></pre>
-<h5 class="code-line" data-line-start=242 data-line-end=243 ><a id="c_ALL_symbol_backfill_242"></a>c) ALL symbol backfill</h5>
-<p class="has-line-data" data-line-start="243" data-line-end="244">{“cmd”:“bfall”,“arg”:“x”}</p>
-<pre><code class="has-line-data" data-line-start="245" data-line-end="247" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"bfall"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"x"</span>}
+<h5 class="code-line" data-line-start=243 data-line-end=244 ><a id="c_ALL_symbol_backfill_243"></a>c) ALL symbol backfill</h5>
+<p class="has-line-data" data-line-start="244" data-line-end="245">{“cmd”:“bfall”,“arg”:“x”}</p>
+<pre><code class="has-line-data" data-line-start="246" data-line-end="248" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"bfall"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"x"</span>}
 </code></pre>
-<p class="has-line-data" data-line-start="247" data-line-end="248">For ALL Symbol backfill, client application should still send individual Json-hist messages for each symbol.</p>
-<h5 class="code-line" data-line-start=248 data-line-end=249 ><a id="d_ADD_symbol_to_SUBSCRIBE_rtd_248"></a>d) ADD symbol to SUBSCRIBE rtd</h5>
-<p class="has-line-data" data-line-start="249" data-line-end="250">{“cmd”:“addsym”,“arg”:“SYMBOL_NAME”}</p>
-<pre><code class="has-line-data" data-line-start="251" data-line-end="253" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"addsym"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM10"</span>}
+<p class="has-line-data" data-line-start="248" data-line-end="249">For ALL Symbol backfill, client application should still send individual Json-hist messages for each symbol.</p>
+<h5 class="code-line" data-line-start=250 data-line-end=251 ><a id="d_ADD_symbol_to_SUBSCRIBE_rtd_250"></a>d) ADD symbol to SUBSCRIBE rtd</h5>
+<p class="has-line-data" data-line-start="251" data-line-end="252">{“cmd”:“addsym”,“arg”:“SYMBOL_NAME”}</p>
+<pre><code class="has-line-data" data-line-start="253" data-line-end="255" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"addsym"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM10"</span>}
 </code></pre>
-<h5 class="code-line" data-line-start=253 data-line-end=254 ><a id="e_REMOVE_symbol_OR_UNSUBSCRIBE_rtd_253"></a>e) REMOVE symbol OR UNSUBSCRIBE rtd</h5>
-<p class="has-line-data" data-line-start="254" data-line-end="255">{“cmd”:“remsym”,“arg”:“SYMBOL_NAME”}</p>
-<pre><code class="has-line-data" data-line-start="256" data-line-end="258" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"remsym"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM6"</span>}
+<h5 class="code-line" data-line-start=256 data-line-end=257 ><a id="e_REMOVE_symbol_OR_UNSUBSCRIBE_rtd_256"></a>e) REMOVE symbol OR UNSUBSCRIBE rtd</h5>
+<p class="has-line-data" data-line-start="257" data-line-end="258">{“cmd”:“remsym”,“arg”:“SYMBOL_NAME”}</p>
+<pre><code class="has-line-data" data-line-start="259" data-line-end="261" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"remsym"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM6"</span>}
 </code></pre>
-<h4 class="code-line" data-line-start=260 data-line-end=261 ><a id="32_Response_CMD_to_WS_RTD_Plugin_from_Server_260"></a>3.2) Response CMD “to WS_RTD” Plug-in from Server</h4>
-<h5 class="code-line" data-line-start=262 data-line-end=263 ><a id="a_General_acknowledgement_reponse_262"></a>a) General acknowledgement reponse</h5>
-<p class="has-line-data" data-line-start="263" data-line-end="265">{“cmd”:“CMD_SENT”,“code”:int_code,“arg”:“response string”}<br>
+<h5 class="code-line" data-line-start=262 data-line-end=263 ><a id="f_CLIENTAPP_connected_request_ping_262"></a>f) CLIENT-APP connected request ping</h5>
+<p class="has-line-data" data-line-start="263" data-line-end="264">{“cmd”:“cping”,“arg”:&quot;&quot;}</p>
+<pre><code class="has-line-data" data-line-start="265" data-line-end="267" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"cping"</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">""</span>}
+</code></pre>
+<p class="has-line-data" data-line-start="267" data-line-end="268">Get state if any Client-App is connected to the relay. Also, a ping-alive packet that wsrtd is connected to Relay server.</p>
+<h4 class="code-line" data-line-start=270 data-line-end=271 ><a id="32_Response_CMD_to_WS_RTD_Plugin_from_Server_270"></a>3.2) Response CMD “to WS_RTD” Plug-in from Server</h4>
+<h5 class="code-line" data-line-start=272 data-line-end=273 ><a id="a_General_acknowledgement_response_272"></a>a) General acknowledgement response</h5>
+<p class="has-line-data" data-line-start="273" data-line-end="275">{“cmd”:“CMD_SENT”,“code”:int_code,“arg”:“response string”}<br>
 Mandatory code field</p>
-<pre><code class="has-line-data" data-line-start="266" data-line-end="269" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"remsym"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM6 unsubscribed ok"</span>}    /* sucess example*/
+<pre><code class="has-line-data" data-line-start="276" data-line-end="279" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"remsym"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM6 unsubscribed ok"</span>}    /* sucess example*/
 {<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"addsym"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">400</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"XYZ9 subscribe error, invalid"</span>} /* failure example*/
 </code></pre>
-<h4 class="code-line" data-line-start=271 data-line-end=272 ><a id="33_Request_CMD_to_WS_RTD_Plugin_from_Server_271"></a>3.3) Request CMD “to WS_RTD” Plug-in “from” Server</h4>
-<p class="has-line-data" data-line-start="272" data-line-end="274">Mandatory code=300<br>
+<h5 class="code-line" data-line-start=280 data-line-end=281 ><a id="b_Ping_acknowledgement_response_280"></a>b) Ping acknowledgement response</h5>
+<p class="has-line-data" data-line-start="281" data-line-end="282">Mandatory code field</p>
+<pre><code class="has-line-data" data-line-start="283" data-line-end="286" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"cping"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"Vendor Connected"</span>}    /* Client running &amp; connected to remote*/
+{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"cping"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">400</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"Vendor Disconnected"</span>} /* Client running but remote <span class="hljs-built_in">source</span> is disconnected*/
+</code></pre>
+<h4 class="code-line" data-line-start=288 data-line-end=289 ><a id="33_Request_CMD_to_WS_RTD_Plugin_from_Server_288"></a>3.3) Request CMD “to WS_RTD” Plug-in “from” Server</h4>
+<p class="has-line-data" data-line-start="289" data-line-end="291">Mandatory code=300<br>
 {“cmd”:“request_cmd”,“code”:300,“arg”:“request_arg”}</p>
-<h5 class="code-line" data-line-start=275 data-line-end=276 ><a id="a_REMOVE_or_DELETE_a_Symbol_IN_plugin_Database_275"></a>a) REMOVE or DELETE a Symbol “IN” plug-in Database</h5>
-<p class="has-line-data" data-line-start="276" data-line-end="279">{“cmd”:“dbremsym”,“code”:300,“arg”:“SYMBOL_NAME”}<br>
+<h5 class="code-line" data-line-start=292 data-line-end=293 ><a id="a_REMOVE_or_DELETE_a_Symbol_IN_plugin_Database_292"></a>a) REMOVE or DELETE a Symbol “IN” plug-in Database</h5>
+<p class="has-line-data" data-line-start="293" data-line-end="296">{“cmd”:“dbremsym”,“code”:300,“arg”:“SYMBOL_NAME”}<br>
 Case-sensitive match<br>
 This is useful to FREE memory in the plug-in DB</p>
-<pre><code class="has-line-data" data-line-start="280" data-line-end="284" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbremsym"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM9"</span>}
+<pre><code class="has-line-data" data-line-start="297" data-line-end="301" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbremsym"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM9"</span>}
 returns {<span class="hljs-string">"ack"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>.<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM9 removed from DB"</span>}     /* success */
 returns {<span class="hljs-string">"ack"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">400</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"SYM9 NOT found in DB"</span>)     /* failure */
 </code></pre>
-<h5 class="code-line" data-line-start=285 data-line-end=286 ><a id="b_Get_the_List_of_Symbols_in_Plugin_Database_285"></a>b) Get the List of Symbols in Plug-in Database</h5>
-<p class="has-line-data" data-line-start="286" data-line-end="289">{“cmd”:“dbgetlist”,“code”:300,“arg”:&quot;&quot;}<br>
+<h5 class="code-line" data-line-start=302 data-line-end=303 ><a id="b_Get_the_List_of_Symbols_in_Plugin_Database_302"></a>b) Get the List of Symbols in Plug-in Database</h5>
+<p class="has-line-data" data-line-start="303" data-line-end="306">{“cmd”:“dbgetlist”,“code”:300,“arg”:&quot;&quot;}<br>
 “arg” field required, can set empty or some string description<br>
 returns a comma-string of symbols</p>
-<pre><code class="has-line-data" data-line-start="290" data-line-end="293" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbgetlist"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"DB Symbol list requested at 14:56:00"</span>}
+<pre><code class="has-line-data" data-line-start="307" data-line-end="310" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbgetlist"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"DB Symbol list requested at 14:56:00"</span>}
 returns {<span class="hljs-string">"ack"</span>:<span class="hljs-string">"dbgetlist"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>=<span class="hljs-string">"AA,AAPL,AXP,BA,C,CAT,IBM,INTC,"</span>}
 </code></pre>
-<h5 class="code-line" data-line-start=294 data-line-end=295 ><a id="c_Get_the_Base_Time_Interval_of_Plugin_Database_294"></a>c) Get the Base Time Interval of Plug-in Database</h5>
-<p class="has-line-data" data-line-start="295" data-line-end="298">{“cmd”:“dbgetbase”,“code”:300,“arg”:&quot;&quot;}<br>
+<h5 class="code-line" data-line-start=311 data-line-end=312 ><a id="c_Get_the_Base_Time_Interval_of_Plugin_Database_311"></a>c) Get the Base Time Interval of Plug-in Database</h5>
+<p class="has-line-data" data-line-start="312" data-line-end="315">{“cmd”:“dbgetbase”,“code”:300,“arg”:&quot;&quot;}<br>
 “arg” field required, can set empty<br>
 returns a STRING with base time interval in seconds(convert to INT)</p>
-<pre><code class="has-line-data" data-line-start="299" data-line-end="302" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbgetbase"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"DB Symbol list requested at 14:56:00"</span>}
+<pre><code class="has-line-data" data-line-start="316" data-line-end="319" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbgetbase"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"DB Symbol list requested at 14:56:00"</span>}
 returns {<span class="hljs-string">"ack"</span>:<span class="hljs-string">"dbgetbase"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>=<span class="hljs-string">"60"</span>}
 </code></pre>
-<h5 class="code-line" data-line-start=303 data-line-end=304 ><a id="d_Get_the_DB_Status_of_Plugin_Database_303"></a>d) Get the DB Status of Plug-in Database</h5>
-<p class="has-line-data" data-line-start="304" data-line-end="308">{“cmd”:“dbstatus”,“code”:300,“arg”:&quot;&quot;}<br>
+<h5 class="code-line" data-line-start=320 data-line-end=321 ><a id="d_Get_the_DB_Status_of_Plugin_Database_320"></a>d) Get the DB Status of Plug-in Database</h5>
+<p class="has-line-data" data-line-start="321" data-line-end="325">{“cmd”:“dbstatus”,“code”:300,“arg”:&quot;&quot;}<br>
 “arg” field required, can set empty<br>
 returns a STRING with Format as ( convert to INT )<br>
-Current_Sym_Count, Max_Sym_Limit, Max_Size_Sym_Quotes, Refresh_Interval, Base_Interval</p>
-<pre><code class="has-line-data" data-line-start="309" data-line-end="312" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbstatus"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"DB Status requested at 14:56:00"</span>}
-returns {<span class="hljs-string">"ack"</span>:<span class="hljs-string">"dbstatus"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>=<span class="hljs-string">"500 1000 200 300 60"</span>}
+Current_Sym_Count, Max_Sym_Limit, Max_Size_Sym_Quotes, Refresh_Interval, Base_Interval, DB_Name</p>
+<pre><code class="has-line-data" data-line-start="326" data-line-end="329" class="language-sh">{<span class="hljs-string">"cmd"</span>:<span class="hljs-string">"dbstatus"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">300</span>,<span class="hljs-string">"arg"</span>:<span class="hljs-string">"DB Status requested at 14:56:00"</span>}
+returns {<span class="hljs-string">"ack"</span>:<span class="hljs-string">"dbstatus"</span>,<span class="hljs-string">"code"</span>:<span class="hljs-number">200</span>,<span class="hljs-string">"arg"</span>=<span class="hljs-string">"500 1000 200 300 60 Db_Test"</span>}
 </code></pre>
-<h3 class="code-line" data-line-start=313 data-line-end=314 ><a id="4_ACK_format_in_json_message_313"></a>4) ACK format in json message</h3>
-<p class="has-line-data" data-line-start="314" data-line-end="316">Plug-in will respond with <strong>Acknowledgement TO Server</strong> for all code=300 Server-side REQUESTS with json-ACK “ack” with server-request, “arg” with description and “code” which is integer<br>
+<h3 class="code-line" data-line-start=331 data-line-end=332 ><a id="4_ACK_format_in_json_message_331"></a>4) ACK format in json message</h3>
+<p class="has-line-data" data-line-start="332" data-line-end="334">Plug-in will respond with <strong>Acknowledgement TO Server</strong> for all code=300 Server-side REQUESTS with json-ACK “ack” with server-request, “arg” with description and “code” which is integer<br>
 Code values for OK=200, and OTHER/BAD=400</p>
-<pre><code class="has-line-data" data-line-start="317" data-line-end="319" class="language-sh">For samples, check <span class="hljs-number">3.3</span> Plug-in <span class="hljs-built_in">return</span> messages
+<pre><code class="has-line-data" data-line-start="335" data-line-end="337" class="language-sh">For samples, check <span class="hljs-number">3.3</span> Plug-in <span class="hljs-built_in">return</span> messages
 </code></pre>
-<h3 class="code-line" data-line-start=321 data-line-end=322 ><a id="Important_Json_string_compression_and_format_321"></a>Important: Json string compression and format</h3>
+<h3 class="code-line" data-line-start=339 data-line-end=340 ><a id="Important_Json_string_compression_and_format_339"></a>Important: Json string compression and format</h3>
 <ul>
-<li class="has-line-data" data-line-start="322" data-line-end="323">Json message should be compressed removing all whitespaces or prettify.</li>
-<li class="has-line-data" data-line-start="323" data-line-end="325">Use your library Json Encoder to prevent errors.<br>
+<li class="has-line-data" data-line-start="340" data-line-end="341">Json message should be compressed removing all whitespaces or prettify.</li>
+<li class="has-line-data" data-line-start="341" data-line-end="343">Use your library Json Encoder to prevent errors.<br>
 For example, <em>The JSON standard requires double quotes and will not accept single quotes</em></li>
-<li class="has-line-data" data-line-start="325" data-line-end="326">The json-type of messages are string matched at the start</li>
-<li class="has-line-data" data-line-start="326" data-line-end="327">Json CMD, history-format string and RTD fields are all <strong>case-sensitive</strong></li>
+<li class="has-line-data" data-line-start="343" data-line-end="344">The json-type of messages are string matched at the start</li>
+<li class="has-line-data" data-line-start="344" data-line-end="345">Json CMD, history-format string and RTD fields are all <strong>case-sensitive</strong></li>
 </ul>
-<pre><code class="has-line-data" data-line-start="328" data-line-end="333" class="language-sh">C++ <span class="hljs-keyword">case</span>-sensitive Raw string match example <span class="hljs-keyword">for</span> performance
+<pre><code class="has-line-data" data-line-start="346" data-line-end="351" class="language-sh">C++ <span class="hljs-keyword">case</span>-sensitive Raw string match example <span class="hljs-keyword">for</span> performance
 R<span class="hljs-string">"([{"</span>n<span class="hljs-string">")"</span>     // Realtime Data
 R<span class="hljs-string">"({"</span>cmd<span class="hljs-string">")"</span>    // Commands
 R<span class="hljs-string">"({"</span>hist<span class="hljs-string">")"</span>   // Historical Data
 </code></pre>
-<h2 class="code-line" data-line-start=334 data-line-end=335 ><a id="Database_Plugin_Commands_334"></a>Database Plug-in Commands</h2>
-<p class="has-line-data" data-line-start="335" data-line-end="337">Explained here <a href="https://forum.amibroker.com/t/documentation-on-batch-data-plugin-command/39269">Amibroker Forum</a><br>
+<h2 class="code-line" data-line-start=352 data-line-end=353 ><a id="Database_Plugin_Commands_352"></a>Database Plug-in Commands</h2>
+<p class="has-line-data" data-line-start="353" data-line-end="355">Explained here <a href="https://forum.amibroker.com/t/documentation-on-batch-data-plugin-command/39269">Amibroker Forum</a><br>
 Amibroker <a href="https://www.amibroker.com/guide/h_batch.html">Batch window manual</a></p>
-<p class="has-line-data" data-line-start="338" data-line-end="340">Every time the Plug-in receives data, it stores is internally in its own temporary storage and notifies Amibroker of new data. Unfortunately, by design, if the Symbol is not being used by the user is anyway, the plug-in may never be able to “push” the data to AB local Database that is persistent.<br>
+<p class="has-line-data" data-line-start="356" data-line-end="358">Every time the Plug-in receives data, it stores is internally in its own temporary storage and notifies Amibroker of new data. Unfortunately, by design, if the Symbol is not being used by the user in any way, the plug-in may never be able to “push” the data to AB local Database that is persistent.<br>
 Therefore, user needs to use a Batch file that consists of an empty Analysis Exploration to force all symbols to fetch data. More on this later.</p>
-<p class="has-line-data" data-line-start="341" data-line-end="342">These are some ways to communicate with the Plug-in from the Amibroker User-Interface OR when the websocket is shutdown and therefore not reachable externally.</p>
-<h5 class="code-line" data-line-start=343 data-line-end=344 ><a id="1_PushDBtoAB_343"></a>1) PushDBtoAB</h5>
-<p class="has-line-data" data-line-start="344" data-line-end="345">Batch command to inform plug-in that an all symbol fetch has been performed.</p>
-<h5 class="code-line" data-line-start=346 data-line-end=347 ><a id="2_ConnectPlugin_346"></a>2) ConnectPlugin</h5>
-<p class="has-line-data" data-line-start="347" data-line-end="348">Batch command to start the Websocket connection.</p>
-<h5 class="code-line" data-line-start=349 data-line-end=350 ><a id="3_ShutdownPlugin_349"></a>3) ShutdownPlugin</h5>
-<p class="has-line-data" data-line-start="350" data-line-end="351">Batch command to stop the Websocket connection.</p>
-<h5 class="code-line" data-line-start=352 data-line-end=353 ><a id="4_DbStatus_352"></a>4) DbStatus</h5>
-<p class="has-line-data" data-line-start="353" data-line-end="354">Batch command to log some Plug-in statistics.</p>
-<pre><code class="has-line-data" data-line-start="355" data-line-end="357" class="language-sh">[<span class="hljs-number">1</span>] DBG: Db() Status Map_size=<span class="hljs-number">4</span>, Qt_RingBufr=<span class="hljs-number">200</span>, SymList=SYM1,SYM3,SYM4,SYM5,
+<p class="has-line-data" data-line-start="359" data-line-end="360">These are some ways to communicate with the Plug-in from the Amibroker User-Interface OR when the websocket is shutdown and therefore not reachable externally.</p>
+<h5 class="code-line" data-line-start=361 data-line-end=362 ><a id="1_PushDBtoAB_361"></a>1) PushDBtoAB</h5>
+<p class="has-line-data" data-line-start="362" data-line-end="363">Batch command to inform plug-in that an all symbol fetch has been performed.</p>
+<h5 class="code-line" data-line-start=364 data-line-end=365 ><a id="2_ConnectPlugin_364"></a>2) ConnectPlugin</h5>
+<p class="has-line-data" data-line-start="365" data-line-end="366">Batch command to start the Websocket connection.</p>
+<h5 class="code-line" data-line-start=367 data-line-end=368 ><a id="3_ShutdownPlugin_367"></a>3) ShutdownPlugin</h5>
+<p class="has-line-data" data-line-start="368" data-line-end="369">Batch command to stop the Websocket connection.</p>
+<h5 class="code-line" data-line-start=370 data-line-end=371 ><a id="4_DbStatus_370"></a>4) DbStatus</h5>
+<p class="has-line-data" data-line-start="371" data-line-end="372">Batch command to log some Plug-in statistics.</p>
+<pre><code class="has-line-data" data-line-start="373" data-line-end="375" class="language-sh">[<span class="hljs-number">1</span>] DBG: Db() Status Map_size=<span class="hljs-number">4</span>, Qt_RingBufr=<span class="hljs-number">200</span>, SymList=SYM1,SYM3,SYM4,SYM5,
 </code></pre>
-<h5 class="code-line" data-line-start=357 data-line-end=358 ><a id="5_Clear_First_AccessAutomatic_backfill_data_357"></a>5) Clear First Access/Automatic backfill data</h5>
-<p class="has-line-data" data-line-start="358" data-line-end="359">For every first access of a symbol, bfauto or bffull request is sent once only. You can clear the flag with this.</p>
-<p class="has-line-data" data-line-start="360" data-line-end="361">&lt; Add more commands as required&gt;</p>
-<h2 class="code-line" data-line-start=362 data-line-end=363 ><a id="Logging_and_troubleshooting_362"></a>Logging and troubleshooting</h2>
-<h4 class="code-line" data-line-start=363 data-line-end=364 ><a id="1_DebugView_363"></a>1) DebugView</h4>
-<p class="has-line-data" data-line-start="364" data-line-end="365">WS_RTD uses extensive logging using Windows Debug output.</p>
+<h5 class="code-line" data-line-start=375 data-line-end=376 ><a id="5_Clear_First_AccessAutomatic_backfill_data_375"></a>5) Clear First Access/Automatic backfill data</h5>
+<p class="has-line-data" data-line-start="376" data-line-end="377">For every first access of a symbol, bfauto or bffull request is sent once only. You can clear the flag with this.</p>
+<p class="has-line-data" data-line-start="378" data-line-end="379">&lt; Add more commands as required&gt;</p>
+<h2 class="code-line" data-line-start=380 data-line-end=381 ><a id="Logging_and_troubleshooting_380"></a>Logging and troubleshooting</h2>
+<h4 class="code-line" data-line-start=381 data-line-end=382 ><a id="1_DebugView_381"></a>1) DebugView</h4>
+<p class="has-line-data" data-line-start="382" data-line-end="383">WS_RTD uses extensive logging using Windows Debug output.</p>
 <ul>
-<li class="has-line-data" data-line-start="365" data-line-end="366">Just run <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/debugview">DebugView</a></li>
-<li class="has-line-data" data-line-start="366" data-line-end="367">Set the Filter to “DBG” <em>(may change this string later)</em></li>
-<li class="has-line-data" data-line-start="367" data-line-end="369">View realtime Plug-in related information here</li>
+<li class="has-line-data" data-line-start="383" data-line-end="384">Just run <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/debugview">DebugView</a></li>
+<li class="has-line-data" data-line-start="384" data-line-end="385">Set the Filter to “DBG” <em>(may change this string later)</em></li>
+<li class="has-line-data" data-line-start="385" data-line-end="387">View realtime Plug-in related information here</li>
 </ul>
-<p class="has-line-data" data-line-start="369" data-line-end="370">[<img src="https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/debug1.png?raw=true" alt="img dbgview11">]</p>
-<h4 class="code-line" data-line-start=371 data-line-end=372 ><a id="2_One_or_some_symbols_not_updating_371"></a>2) One or some symbols not updating</h4>
-<p class="has-line-data" data-line-start="372" data-line-end="373">Check under Symbol &gt; Information window,</p>
-<pre><code class="has-line-data" data-line-start="374" data-line-end="376" class="language-sh">Use only <span class="hljs-built_in">local</span> database = No    (Ensure No, If yes, plug-in-cannot update it)
+<p class="has-line-data" data-line-start="387" data-line-end="388">[<img src="https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/debug1.png?raw=true" alt="img dbgview11">]</p>
+<h4 class="code-line" data-line-start=389 data-line-end=390 ><a id="2_One_or_some_symbols_not_updating_389"></a>2) One or some symbols not updating</h4>
+<p class="has-line-data" data-line-start="390" data-line-end="391">Check under Symbol &gt; Information window,</p>
+<pre><code class="has-line-data" data-line-start="392" data-line-end="394" class="language-sh">Use only <span class="hljs-built_in">local</span> database = No    (Ensure No, If yes, plug-in-cannot update it)
 </code></pre>
-<h4 class="code-line" data-line-start=377 data-line-end=378 ><a id="3_View_Count_of_bars_that_are_in_Plugin_DB_and_those_that_have_been_updated_to_Amibroker_DB_377"></a>3) View Count of bars that are in Plug-in DB and those that have been updated to Amibroker DB</h4>
-<p class="has-line-data" data-line-start="378" data-line-end="380">Whenever new data arrives, whether RTD or Historical, it is immediately stored internally. Amibroker is notified, but AB will choose to to request data only when that symbol is being used.<br>
+<h4 class="code-line" data-line-start=395 data-line-end=396 ><a id="3_View_Count_of_bars_that_are_in_Plugin_DB_and_those_that_have_been_updated_to_Amibroker_DB_395"></a>3) View Count of bars that are in Plug-in DB and those that have been updated to Amibroker DB</h4>
+<p class="has-line-data" data-line-start="396" data-line-end="398">Whenever new data arrives, whether RTD or Historical, it is immediately stored internally. Amibroker is notified, but AB will choose to to request data only when that symbol is being used.<br>
 To visualize that, currently, Two fields in the AB REaltime Quote window are dedicated to that.</p>
-<pre><code class="has-line-data" data-line-start="381" data-line-end="383" class="language-sh">EPS: This column shows the Total count of bars <span class="hljs-keyword">in</span> Plug-in DB
+<pre><code class="has-line-data" data-line-start="399" data-line-end="401" class="language-sh">EPS: This column shows the Total count of bars <span class="hljs-keyword">in</span> Plug-in DB
 </code></pre>
-<pre><code class="has-line-data" data-line-start="384" data-line-end="386" class="language-sh">Dividend: This column shows the Total count of bars <span class="hljs-keyword">in</span> updated to AB from the Plug-in DB
+<pre><code class="has-line-data" data-line-start="402" data-line-end="404" class="language-sh">Dividend: This column shows the Total count of bars <span class="hljs-keyword">in</span> updated to AB from the Plug-in DB
 </code></pre>
-<p class="has-line-data" data-line-start="386" data-line-end="387">[<img src="https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/RT_Data_index.png?raw=true" alt="RT window1">]</p>
-<h4 class="code-line" data-line-start=388 data-line-end=389 ><a id="4_AB_Plugin_UI_Commands_Connect_and_Shutdown_388"></a>4) AB Plug-in UI Commands: Connect and Shutdown</h4>
-<p class="has-line-data" data-line-start="389" data-line-end="392">These commands will only Connect or Disconnect the plug-in (Client Websocket) to the local relay server. Data stored in the Plug-in DB is not affected.<br>
+<p class="has-line-data" data-line-start="404" data-line-end="405">[<img src="https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/RT_Data_index.png?raw=true" alt="RT window1">]</p>
+<h4 class="code-line" data-line-start=406 data-line-end=407 ><a id="4_AB_Plugin_UI_Commands_Connect_and_Shutdown_406"></a>4) AB Plug-in UI Commands: Connect and Shutdown</h4>
+<p class="has-line-data" data-line-start="407" data-line-end="410">These commands will only Connect or Disconnect the plug-in (Client Websocket) to the local relay server. Data stored in the Plug-in DB is not affected.<br>
 AB Symbols will still get updated if there is fresh data in the plug-in DB while the user has disconnected the plug-in.<br>
 The plug-in DB is not persistent, that means, if user Exits Amibroker or Changes the Current DB in Amibroker, only then the plug-in data is cleared.</p>
-<h4 class="code-line" data-line-start=393 data-line-end=394 ><a id="5_Sample_output_of_Configure_settings_393"></a>5) Sample output of Configure settings</h4>
-<pre><code class="has-line-data" data-line-start="395" data-line-end="397" class="language-sh">DBG: ConfDlg() RI=<span class="hljs-number">300</span>ms, Conn=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">10101</span>, SymLimit=<span class="hljs-number">1000</span>, QuoteLimit=<span class="hljs-number">250</span>, DbName=Data
+<h4 class="code-line" data-line-start=411 data-line-end=412 ><a id="5_Sample_output_of_Configure_settings_411"></a>5) Sample output of Configure settings</h4>
+<pre><code class="has-line-data" data-line-start="413" data-line-end="415" class="language-sh">DBG: ConfDlg() RI=<span class="hljs-number">300</span>ms, Conn=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">10101</span>, SymLimit=<span class="hljs-number">1000</span>, QuoteLimit=<span class="hljs-number">250</span>, DbName=Data
 </code></pre>
-<p class="has-line-data" data-line-start="397" data-line-end="398">&lt; more items to come &gt;</p>
-<h1 class="code-line" data-line-start=400 data-line-end=401 ><a id="WS_RTD_Plugin_Settings_storage_400"></a>WS_RTD Plugin Settings storage</h1>
-<p class="has-line-data" data-line-start="401" data-line-end="403">The plugin stores settings in the Windows Registry like Amibroker QT.dll<br>
+<p class="has-line-data" data-line-start="415" data-line-end="416">&lt; more items to come &gt;</p>
+<h1 class="code-line" data-line-start=418 data-line-end=419 ><a id="WS_RTD_Plugin_Settings_storage_418"></a>WS_RTD Plugin Settings storage</h1>
+<p class="has-line-data" data-line-start="419" data-line-end="421">The plugin stores settings in the Windows Registry like Amibroker QT.dll<br>
 Amibroker path</p>
-<pre><code class="has-line-data" data-line-start="404" data-line-end="406" class="language-sh">Computer\HKEY_CURRENT_USER\SOFTWARE\TJP\wsRtD
+<pre><code class="has-line-data" data-line-start="422" data-line-end="424" class="language-sh">Computer\HKEY_CURRENT_USER\SOFTWARE\TJP\wsRtD
 </code></pre>
-<pre><code class="has-line-data" data-line-start="407" data-line-end="409" class="language-sh">Nested <span class="hljs-keyword">in</span> TJP\wsRtD\&lt;Database_name&gt;
+<pre><code class="has-line-data" data-line-start="425" data-line-end="427" class="language-sh">Nested <span class="hljs-keyword">in</span> TJP\wsRtD\&lt;Database_name&gt;
 </code></pre>
-<p class="has-line-data" data-line-start="409" data-line-end="412">Settings will be UNIQUE to each unique database name created in AB.<br>
+<p class="has-line-data" data-line-start="427" data-line-end="430">Settings will be UNIQUE to each unique database name created in AB.<br>
 ALL Amibroker Databases that share common Database name but are different filesystem path will “still” share the same settings.<br>
 This is the best of both, allows the user to separate or share settings as required.</p>
-<pre><code class="has-line-data" data-line-start="413" data-line-end="418" class="language-sh">Example <span class="hljs-number">1</span>:
+<pre><code class="has-line-data" data-line-start="431" data-line-end="436" class="language-sh">Example <span class="hljs-number">1</span>:
 Amibroker DB name: Data with their respective paths
 C:\sample1\Data
 D:\archive\old_sample\Data
 </code></pre>
-<p class="has-line-data" data-line-start="418" data-line-end="419"><em>Both AB DBs above will share the same settings and there will be only one registry key named “Data”</em></p>
-<pre><code class="has-line-data" data-line-start="420" data-line-end="424" class="language-sh">Example <span class="hljs-number">2</span>:
+<p class="has-line-data" data-line-start="436" data-line-end="437"><em>Both AB DBs above will share the same settings and there will be only one registry key named “Data”</em></p>
+<pre><code class="has-line-data" data-line-start="438" data-line-end="442" class="language-sh">Example <span class="hljs-number">2</span>:
 C:\sample1\Data_rtd
 C:\sample1\wsrtd
 </code></pre>
-<p class="has-line-data" data-line-start="424" data-line-end="426"><em>Data2 and wsrtd will be a new entries and each can have its own settings</em><br>
+<p class="has-line-data" data-line-start="442" data-line-end="444"><em>Data2 and wsrtd will be a new entries and each can have its own settings</em><br>
 Image of Windows Registry below:</p>
-<p class="has-line-data" data-line-start="427" data-line-end="428">[<img src="https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/TJP_Registry.png?raw=true" alt="img sample_server1">]</p>
-<h2 class="code-line" data-line-start=431 data-line-end=432 ><a id="ClientData_Sender_application_431"></a>Client-Data Sender application</h2>
-<p class="has-line-data" data-line-start="432" data-line-end="433">For production release:</p>
-<pre><code class="has-line-data" data-line-start="434" data-line-end="439" class="language-sh">To <span class="hljs-keyword">do</span>:
+<p class="has-line-data" data-line-start="445" data-line-end="446">[<img src="https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/images/help/TJP_Registry.png?raw=true" alt="img sample_server1">]</p>
+<h2 class="code-line" data-line-start=449 data-line-end=450 ><a id="ClientData_Sender_application_449"></a>Client-Data Sender application</h2>
+<p class="has-line-data" data-line-start="450" data-line-end="451">For production release:</p>
+<pre><code class="has-line-data" data-line-start="452" data-line-end="457" class="language-sh">To <span class="hljs-keyword">do</span>:
 For now, this integration depends on the user and technical skill
 Client-sender program should be developed using Vendor specific library.
 Working on providing a Relay Server
 </code></pre>
 <blockquote>
-<p class="has-line-data" data-line-start="440" data-line-end="441">Note: <code>--rolesend</code> is required for client-sender identification</p>
+<p class="has-line-data" data-line-start="458" data-line-end="459">Note: <code>--rolesend</code> is required for client-sender identification</p>
 </blockquote>
-<p class="has-line-data" data-line-start="442" data-line-end="443">Example rolesend: data vendor / broker client program / Python sample server</p>
+<p class="has-line-data" data-line-start="460" data-line-end="461">Example rolesend: data vendor / broker client program / Python sample server</p>
 <blockquote>
-<p class="has-line-data" data-line-start="444" data-line-end="445">Note: <code>--rolerecv</code> is required for client-receiver identification</p>
+<p class="has-line-data" data-line-start="462" data-line-end="463">Note: <code>--rolerecv</code> is required for client-receiver identification</p>
 </blockquote>
-<p class="has-line-data" data-line-start="446" data-line-end="447">Example rolerecv: Ws_Rtd plugin or ArcticDB data collection socket conn</p>
-<p class="has-line-data" data-line-start="448" data-line-end="449">Verify the connection by navigating to your terminal running the server</p>
-<pre><code class="has-line-data" data-line-start="451" data-line-end="453" class="language-sh"><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">10101</span>
+<p class="has-line-data" data-line-start="464" data-line-end="465">Example rolerecv: Ws_Rtd plugin or ArcticDB data collection socket conn</p>
+<p class="has-line-data" data-line-start="466" data-line-end="467">Verify the connection by navigating to your terminal running the server</p>
+<pre><code class="has-line-data" data-line-start="469" data-line-end="471" class="language-sh"><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">10101</span>
 </code></pre>
-<h4 class="code-line" data-line-start=453 data-line-end=454 ><a id="1_Specifics_of_ClientSender_Application_453"></a>1) Specifics of Client-Sender Application</h4>
-<p class="has-line-data" data-line-start="454" data-line-end="455">The design itself keeps in mind a minimal requirement so the application just needs to conform with the fol1owing:</p>
+<h4 class="code-line" data-line-start=471 data-line-end=472 ><a id="1_Specifics_of_ClientSender_Application_471"></a>1) Specifics of Client-Sender Application</h4>
+<p class="has-line-data" data-line-start="472" data-line-end="473">The design itself keeps in mind a minimal requirement so the application just needs to conform with the fol1owing:</p>
 <ul>
-<li class="has-line-data" data-line-start="455" data-line-end="456">Client-Sender connects to the matching websocket port</li>
-<li class="has-line-data" data-line-start="456" data-line-end="457">On connection, it sends the above simple string “rolesend” before any other data</li>
-<li class="has-line-data" data-line-start="457" data-line-end="458">Then it follows the json-RTD format for realtime bars matching the interval set in AB configure DB</li>
-<li class="has-line-data" data-line-start="458" data-line-end="459">To handle Requests from Data Plug-in, it will receive the json-CMD or json-Hist. It should respond with the appropriate json formats described above. That’s it.</li>
-<li class="has-line-data" data-line-start="459" data-line-end="461">The Advantage of using a relay server is that when either Plug-ins or Client applications reconnect or disconnect, they don’t cause the other party websocket drop errors which is distracting as well.</li>
+<li class="has-line-data" data-line-start="473" data-line-end="474">Client-Sender connects to the matching websocket port</li>
+<li class="has-line-data" data-line-start="474" data-line-end="475">On connection, it sends the above simple string “rolesend” before any other data</li>
+<li class="has-line-data" data-line-start="475" data-line-end="476">Then it follows the json-RTD format for realtime bars matching the interval set in AB configure DB</li>
+<li class="has-line-data" data-line-start="476" data-line-end="477">To handle Requests from Data Plug-in, it will receive the json-CMD or json-Hist. It should respond with the appropriate json formats described above. That’s it.</li>
+<li class="has-line-data" data-line-start="477" data-line-end="479">The Advantage of using a relay server is that when either Plug-ins or Client applications reconnect or disconnect, they don’t cause the other party websocket drop errors which is distracting as well.</li>
 </ul>
-<p class="has-line-data" data-line-start="461" data-line-end="463">&lt; more documentation on this later &gt;<br>
+<p class="has-line-data" data-line-start="479" data-line-end="481">&lt; more documentation on this later &gt;<br>
 The Programming Language of choice or platform does not in any way become restrictive to the user.</p>
-<h1 class="code-line" data-line-start=464 data-line-end=465 ><a id="FAQs_464"></a>FAQs</h1>
-<h4 class="code-line" data-line-start=465 data-line-end=466 ><a id="1_Can_I_Backfill_data_when_the_Status_is_Shutdown_465"></a>1) Can I Backfill data when the Status is Shutdown?</h4>
-<p class="has-line-data" data-line-start="466" data-line-end="468">As the websocket is disconnected, no commands can be sent or received, therefore it is not possible.<br>
+<h1 class="code-line" data-line-start=482 data-line-end=483 ><a id="FAQs_482"></a>FAQs</h1>
+<h4 class="code-line" data-line-start=483 data-line-end=484 ><a id="1_Can_I_Backfill_data_when_the_Status_is_Shutdown_483"></a>1) Can I Backfill data when the Status is Shutdown?</h4>
+<p class="has-line-data" data-line-start="484" data-line-end="486">As the websocket is disconnected, no commands can be sent or received, therefore it is not possible.<br>
 However, Data available inside the plugin-DB can still be accessed for symbols to get updated.</p>
-<h4 class="code-line" data-line-start=469 data-line-end=470 ><a id="2_I_Imported_data_using_Amibroker_ASCII_Importer_now_I_have_duplicate_or_Corrupt_data_469"></a>2) I Imported data using Amibroker ASCII Importer, now I have duplicate or Corrupt data.</h4>
-<p class="has-line-data" data-line-start="470" data-line-end="474">By design, it is up to the user to ensure that duplicate data is not imported. Mixing two different methods can cause unwanted behaviour.<br>
+<h4 class="code-line" data-line-start=487 data-line-end=488 ><a id="2_I_Imported_data_using_Amibroker_ASCII_Importer_now_I_have_duplicate_or_Corrupt_data_487"></a>2) I Imported data using Amibroker ASCII Importer, now I have duplicate or Corrupt data.</h4>
+<p class="has-line-data" data-line-start="488" data-line-end="492">By design, it is up to the user to ensure that duplicate data is not imported. Mixing two different methods can cause unwanted behaviour.<br>
 You can delete all the data and import it afresh.<br>
 Some steps are taken when using plug-in to overwrite duplicate data.<br>
 However, this Plug-in is quite technical and for performance, the user’s Client side application should ensure data integrity.</p>
-<h4 class="code-line" data-line-start=475 data-line-end=476 ><a id="3_Some_of_my_Symbols_are_not_updating_with_data_but_my_Server_shows_that_data_for_RTD_is_generated_475"></a>3) Some of my Symbols are not updating with data but my Server shows that data for RTD is generated.</h4>
-<p class="has-line-data" data-line-start="476" data-line-end="477">Ensure that under Symbol Information window in Amibroker, the setting “Use local database only” is set to No. If yes, Plug-in cannot update to it.</p>
-<h4 class="code-line" data-line-start=478 data-line-end=479 ><a id="4_How_do_I_ADD_symbols_in_AmiBroker_478"></a>4) How do I ADD symbols in AmiBroker?</h4>
-<p class="has-line-data" data-line-start="479" data-line-end="480">When new symbols arrrive in the plugin-DB, the plugin status will be dark Green in colour. You can go to Configure settings Dialog and Click RETRIEVE Button. Symbols will automatically get added.</p>
-<p class="has-line-data" data-line-start="481" data-line-end="482">[<img src="https://raw.githubusercontent.com/ideepcoder/Rtd_Ws_AB_plugin/refs/heads/main/images/help/Retrieve.png" alt="Retrieve">]</p>
-<p class="has-line-data" data-line-start="483" data-line-end="484">The status color will change to 🟢 from <span class="math inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mstyle mathcolor="ForestGreen"><mi>D</mi><mi>a</mi><mi>r</mi><mi>k</mi><mtext> </mtext><mi>G</mi><mi>r</mi><mi>e</mi><mi>e</mi><mi>n</mi></mstyle></mrow></mrow><annotation encoding="application/x-tex">{\color{ForestGreen}Dark \space Green}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;color:ForestGreen;">D</span><span class="mord mathit" style="color:ForestGreen;">a</span><span class="mord mathit" style="margin-right:0.02778em;color:ForestGreen;">r</span><span class="mord mathit" style="margin-right:0.03148em;color:ForestGreen;">k</span><span class="mspace" style="color:ForestGreen;"><span style="color:ForestGreen;"> </span></span><span class="mord mathit" style="color:ForestGreen;">G</span><span class="mord mathit" style="margin-right:0.02778em;color:ForestGreen;">r</span><span class="mord mathit" style="color:ForestGreen;">e</span><span class="mord mathit" style="color:ForestGreen;">e</span><span class="mord mathit" style="color:ForestGreen;">n</span></span></span></span></span></span></p>
-<h4 class="code-line" data-line-start=485 data-line-end=486 ><a id="5_Settings_change_in_Configure_485"></a>5) Settings change in Configure</h4>
-<p class="has-line-data" data-line-start="486" data-line-end="487">Kindly use DebugView to check if settings change requires an AB to be restarted or Plugin to be reconnect. Scroll up to Configure section and read the details.</p>
-<p class="has-line-data" data-line-start="490" data-line-end="491">&lt;here&gt;</p>
-<h2 class="code-line" data-line-start=492 data-line-end=493 ><a id="Development_492"></a>Development</h2>
-<p class="has-line-data" data-line-start="493" data-line-end="494">Want to contribute? Great!</p>
-<h5 class="code-line" data-line-start=494 data-line-end=495 ><a id="A_494"></a>A)</h5>
-<p class="has-line-data" data-line-start="495" data-line-end="499">For now Clent-sender applications have a lot of scope for expansion<br>
+<h4 class="code-line" data-line-start=493 data-line-end=494 ><a id="3_Some_of_my_Symbols_are_not_updating_with_data_but_my_Server_shows_that_data_for_RTD_is_generated_493"></a>3) Some of my Symbols are not updating with data but my Server shows that data for RTD is generated.</h4>
+<p class="has-line-data" data-line-start="494" data-line-end="495">Ensure that under Symbol Information window in Amibroker, the setting “Use local database only” is set to No. If yes, Plug-in cannot update to it.</p>
+<h4 class="code-line" data-line-start=496 data-line-end=497 ><a id="4_How_do_I_ADD_symbols_in_AmiBroker_496"></a>4) How do I ADD symbols in AmiBroker?</h4>
+<p class="has-line-data" data-line-start="497" data-line-end="498">When new symbols arrrive in the plugin-DB, the plugin status will be dark Green in colour. You can go to Configure settings Dialog and Click RETRIEVE Button. Symbols will automatically get added.</p>
+<p class="has-line-data" data-line-start="499" data-line-end="500">[<img src="https://raw.githubusercontent.com/ideepcoder/Rtd_Ws_AB_plugin/refs/heads/main/images/help/Retrieve.png" alt="Retrieve">]</p>
+<p class="has-line-data" data-line-start="501" data-line-end="502">The status color will change to 🟢 from <span class="math inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mstyle mathcolor="ForestGreen"><mi>D</mi><mi>a</mi><mi>r</mi><mi>k</mi><mtext> </mtext><mi>G</mi><mi>r</mi><mi>e</mi><mi>e</mi><mi>n</mi></mstyle></mrow></mrow><annotation encoding="application/x-tex">{\color{ForestGreen}Dark \space Green}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;color:ForestGreen;">D</span><span class="mord mathit" style="color:ForestGreen;">a</span><span class="mord mathit" style="margin-right:0.02778em;color:ForestGreen;">r</span><span class="mord mathit" style="margin-right:0.03148em;color:ForestGreen;">k</span><span class="mspace" style="color:ForestGreen;"><span style="color:ForestGreen;"> </span></span><span class="mord mathit" style="color:ForestGreen;">G</span><span class="mord mathit" style="margin-right:0.02778em;color:ForestGreen;">r</span><span class="mord mathit" style="color:ForestGreen;">e</span><span class="mord mathit" style="color:ForestGreen;">e</span><span class="mord mathit" style="color:ForestGreen;">n</span></span></span></span></span></span></p>
+<h4 class="code-line" data-line-start=503 data-line-end=504 ><a id="5_Settings_change_in_Configure_503"></a>5) Settings change in Configure</h4>
+<p class="has-line-data" data-line-start="504" data-line-end="505">Kindly use DebugView to check if settings change requires an AB to be restarted or Plugin to be reconnect. Scroll up to Configure section and read the details.</p>
+<h2 class="code-line" data-line-start=507 data-line-end=508 ><a id="AFL_access_functions_507"></a>AFL access functions</h2>
+<h3 class="code-line" data-line-start=508 data-line-end=509 ><a id="using_GetExtraData_508"></a>using GetExtraData()</h3>
+<p class="has-line-data" data-line-start="509" data-line-end="510"><a href="https://www.amibroker.com/guide/afl/getextradata.html">https://www.amibroker.com/guide/afl/getextradata.html</a></p>
+<h4 class="code-line" data-line-start=511 data-line-end=512 ><a id="1_IsRtdConn_511"></a>1) “IsRtdConn”</h4>
+<p class="has-line-data" data-line-start="512" data-line-end="513">if Data plugin websocket is connected, 1 else 0</p>
+<h4 class="code-line" data-line-start=514 data-line-end=515 ><a id="2_ClientAppStatus_514"></a>2) “ClientAppStatus”</h4>
+<p class="has-line-data" data-line-start="515" data-line-end="516">if Client App websocket is connected, Client App should implement “cping” cmd</p>
+<pre><code class="has-line-data" data-line-start="517" data-line-end="522" class="language-sh"><span class="hljs-number">0</span> = client-app not running
+<span class="hljs-number">200</span> = running
+<span class="hljs-number">400</span> = running but remote disconnected
+-<span class="hljs-number">1</span> = ping sent, awaiting reply
+</code></pre>
+<p class="has-line-data" data-line-start="523" data-line-end="524">&lt;here&gt;</p>
+<h2 class="code-line" data-line-start=525 data-line-end=526 ><a id="Development_525"></a>Development</h2>
+<p class="has-line-data" data-line-start="526" data-line-end="527">Want to contribute? Great!</p>
+<h5 class="code-line" data-line-start=527 data-line-end=528 ><a id="A_527"></a>A)</h5>
+<p class="has-line-data" data-line-start="528" data-line-end="532">For now Clent-sender applications have a lot of scope for expansion<br>
 Current Relay Server is python-based.<br>
 Client-sender can be in a Programming Language of your choice or using Data Vendor library,<br>
 these applications can be expanded greatly to encompass various Brokers APIs and Data Vendors.</p>
-<h5 class="code-line" data-line-start=499 data-line-end=500 ><a id="B_499"></a>B)</h5>
-<p class="has-line-data" data-line-start="500" data-line-end="501">WS_RTD uses C++ for development, strongly based on ATL/MFC, but is currently closed.</p>
-<h2 class="code-line" data-line-start=502 data-line-end=503 ><a id="License_502"></a>License</h2>
-<p class="has-line-data" data-line-start="503" data-line-end="504"><strong>To be decided</strong></p>
-<p class="has-line-data" data-line-start="505" data-line-end="506">This LICENSE Section alongwith the CREDIT and AUTHOR Section at minimum should be distributed EXACTLY as-is when distributing a copy of the data-plugin binary or DLL.</p>
-<h2 class="code-line" data-line-start=507 data-line-end=508 ><a id="Author_507"></a>Author</h2>
-<p class="has-line-data" data-line-start="508" data-line-end="512">NSM51<br>
+<h5 class="code-line" data-line-start=532 data-line-end=533 ><a id="B_532"></a>B)</h5>
+<p class="has-line-data" data-line-start="533" data-line-end="534">WS_RTD uses C++ for development, strongly based on ATL/MFC, but is currently closed.</p>
+<h2 class="code-line" data-line-start=535 data-line-end=536 ><a id="License_535"></a>License</h2>
+<p class="has-line-data" data-line-start="536" data-line-end="537"><strong>To be decided</strong></p>
+<p class="has-line-data" data-line-start="538" data-line-end="539">This LICENSE Section alongwith the CREDIT and AUTHOR Section at minimum should be distributed EXACTLY as-is when distributing a copy of the data-plugin binary or DLL.</p>
+<h2 class="code-line" data-line-start=540 data-line-end=541 ><a id="Author_540"></a>Author</h2>
+<p class="has-line-data" data-line-start="541" data-line-end="545">NSM51<br>
 A fan and avid Amibroker user.<br>
 <a href="https://forum.amibroker.com/u/nsm51/summary">https://forum.amibroker.com/u/nsm51/summary</a><br>
 &lt; Journey story about the idea of this plugin &gt;</p>
-<h1 class="code-line" data-line-start=513 data-line-end=514 ><a id="Tech__Credits_513"></a>Tech &amp; Credits:</h1>
-<h2 class="code-line" data-line-start=514 data-line-end=515 ><a id="AB_Data_Plugin_514"></a>AB Data Plugin</h2>
-<p class="has-line-data" data-line-start="515" data-line-end="518">Inspired by QT.dll sample from AmiBroker ADK<br>
+<h1 class="code-line" data-line-start=546 data-line-end=547 ><a id="Tech__Credits_546"></a>Tech &amp; Credits:</h1>
+<h2 class="code-line" data-line-start=547 data-line-end=548 ><a id="AB_Data_Plugin_547"></a>AB Data Plugin</h2>
+<p class="has-line-data" data-line-start="548" data-line-end="551">Inspired by QT.dll sample from AmiBroker ADK<br>
 <a href="https://gitlab.com/amibroker/adk/-/tree/master/Samples/QT">https://gitlab.com/amibroker/adk/-/tree/master/Samples/QT</a><br>
 Credits: <a href="https://www.amibroker.com">Amibroker</a> Company &amp; Dr. Tomasz Janeczko</p>
-<h2 class="code-line" data-line-start=519 data-line-end=520 ><a id="Web_Socket_519"></a>Web Socket</h2>
-<p class="has-line-data" data-line-start="520" data-line-end="525">Current WS library: EasyWsClient<br>
+<h2 class="code-line" data-line-start=552 data-line-end=553 ><a id="Web_Socket_552"></a>Web Socket</h2>
+<p class="has-line-data" data-line-start="553" data-line-end="558">Current WS library: EasyWsClient<br>
 <a href="https://github.com/dhbaird/easywsclient">https://github.com/dhbaird/easywsclient</a><br>
 License: MIT<br>
 Works well as light-weight windows WinSock2 wrapper.<br>
 Credits: dhbaird</p>
-<h2 class="code-line" data-line-start=526 data-line-end=527 ><a id="JSON_526"></a>JSON</h2>
-<p class="has-line-data" data-line-start="527" data-line-end="532">Current JSON library: RapidJson<br>
+<h2 class="code-line" data-line-start=559 data-line-end=560 ><a id="JSON_559"></a>JSON</h2>
+<p class="has-line-data" data-line-start="560" data-line-end="565">Current JSON library: RapidJson<br>
 <a href="https://github.com/Tencent/rapidjson">https://github.com/Tencent/rapidjson</a><br>
 License: MIT<br>
 Credits: Milo Yip<br>
 RapidJson is benchmarked as fastest.</p>
-<h2 class="code-line" data-line-start=533 data-line-end=534 ><a id="WS_Class_and_Queue_inspiration_533"></a>WS Class and Queue inspiration</h2>
-<p class="has-line-data" data-line-start="534" data-line-end="535"><a href="https://stackoverflow.com/a/69054531">https://stackoverflow.com/a/69054531</a>, Credits: Jerry Coffin</p>
-<p class="has-line-data" data-line-start="536" data-line-end="537"><em>Created using</em> <a href="https://dillinger.io/">Dillinger</a></p>
-<h6 class="code-line" data-line-start=538 data-line-end=539 ><a id="Doc_End_538"></a>Doc End</h6>
+<h2 class="code-line" data-line-start=566 data-line-end=567 ><a id="WS_Class_and_Queue_inspiration_566"></a>WS Class and Queue inspiration</h2>
+<p class="has-line-data" data-line-start="567" data-line-end="568"><a href="https://stackoverflow.com/a/69054531">https://stackoverflow.com/a/69054531</a>, Credits: Jerry Coffin</p>
+<p class="has-line-data" data-line-start="569" data-line-end="570"><em>Created using</em> <a href="https://dillinger.io/">Dillinger</a></p>
+<h6 class="code-line" data-line-start=571 data-line-end=572 ><a id="Doc_End_571"></a>Doc End</h6>
 
 </body></html>

@@ -240,32 +240,49 @@ This is a special automatic backfill request command that is sent to the server 
 ```sh
 {"cmd":"bfsym","arg":"y SYM1 3"}
 ```
+
 ##### c) ALL symbol backfill
 {"cmd":"bfall","arg":"x"}
 ```sh
 {"cmd":"bfall","arg":"x"}
 ```
 For ALL Symbol backfill, client application should still send individual Json-hist messages for each symbol.
+
 ##### d) ADD symbol to SUBSCRIBE rtd
 {"cmd":"addsym","arg":"SYMBOL_NAME"}
 ```sh
 {"cmd":"addsym","arg":"SYM10"}
 ```
+
 ##### e) REMOVE symbol OR UNSUBSCRIBE rtd
 {"cmd":"remsym","arg":"SYMBOL_NAME"}
 ```sh
 {"cmd":"remsym","arg":"SYM6"}
 ```
 
+##### f) CLIENT-APP connected request ping
+{"cmd":"cping","arg":""}
+```sh
+{"cmd":"cping","arg":""}
+```
+Get state if any Client-App is connected to the relay. Also, a ping-alive packet that wsrtd is connected to Relay server.
+
 
 #### 3.2) Response CMD "to WS_RTD" Plug-in from Server
 
-##### a) General acknowledgement reponse
+##### a) General acknowledgement response
 {"cmd":"CMD_SENT","code":int_code,"arg":"response string"}
 Mandatory code field
 ```sh
 {"cmd":"remsym","code":200,"arg":"SYM6 unsubscribed ok"}    /* sucess example*/
 {"cmd":"addsym","code":400,"arg":"XYZ9 subscribe error, invalid"} /* failure example*/
+```
+
+##### b) Ping acknowledgement response
+Mandatory code field
+```sh
+{"cmd":"cping","code":200,"arg":"Vendor Connected"}    /* Client running & connected to remote*/
+{"cmd":"cping","code":400,"arg":"Vendor Disconnected"} /* Client running but remote source is disconnected*/
 ```
 
 
@@ -305,11 +322,12 @@ returns {"ack":"dbgetbase","code":200,"arg"="60"}
 {"cmd":"dbstatus","code":300,"arg":""}
 "arg" field required, can set empty
 returns a STRING with Format as ( convert to INT )
-Current_Sym_Count, Max_Sym_Limit, Max_Size_Sym_Quotes, Refresh_Interval, Base_Interval
+Current_Sym_Count, Max_Sym_Limit, Max_Size_Sym_Quotes, Refresh_Interval, Base_Interval, DB_Name
 ```sh
 {"cmd":"dbstatus","code":300,"arg":"DB Status requested at 14:56:00"}
-returns {"ack":"dbstatus","code":200,"arg"="500 1000 200 300 60"}
+returns {"ack":"dbstatus","code":200,"arg"="500 1000 200 300 60 Db_Test"}
 ```
+
 
 ### 4) ACK format in json message
 Plug-in will respond with **Acknowledgement TO Server** for all code=300 Server-side REQUESTS with json-ACK "ack" with server-request, "arg" with description and "code" which is integer
@@ -487,6 +505,21 @@ The status color will change to &#128994; from $${\color{ForestGreen}Dark \space
 Kindly use DebugView to check if settings change requires an AB to be restarted or Plugin to be reconnect. Scroll up to Configure section and read the details.
 
 
+## AFL access functions
+### using GetExtraData()
+https://www.amibroker.com/guide/afl/getextradata.html
+
+#### 1) "IsRtdConn"
+if Data plugin websocket is connected, 1 else 0
+
+#### 2) "ClientAppStatus"
+if Client App websocket is connected, Client App should implement "cping" cmd
+```sh
+0 = client-app not running
+200 = running
+400 = running but remote disconnected
+-1 = ping sent, awaiting reply
+```
 
 <here>
 
