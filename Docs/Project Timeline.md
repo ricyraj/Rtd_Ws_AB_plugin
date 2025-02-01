@@ -26,4 +26,4 @@ https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Samples/Client/Python/v
 ##### 20250128 - Added Python utility script to Validate RTD Json
 https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Utility%20Scripts/Python/json_validator.py
 ##### 20250201 - Added Ping and AFL status function
-https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Docs/WSRTD%20Doc.md#AFL-access-functions
+https://github.com/ideepcoder/Rtd_Ws_AB_plugin/blob/main/Docs/WSRTD%20Doc.md#afl-access-functions
