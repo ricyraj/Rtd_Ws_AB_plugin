@@ -1,0 +1,3 @@
+LIBRARY Rtd_Ws_AB_plugin
+EXPORTS
+; Put your RTD functions here
