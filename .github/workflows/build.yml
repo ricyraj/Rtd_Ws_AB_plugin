@@ -1,0 +1,23 @@
+name: Build Rtd_Ws_AB_plugin DLL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build DLL (x64)
+        run: |
+          msbuild Plugin\Rtd_Ws_AB_plugin.vcxproj /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload DLL
+        uses: actions/upload-artifact@v3
+        with:
+          name: Rtd_Ws_AB_plugin_x64
+          path: Plugin\x64\Release\Rtd_Ws_AB_plugin.dll
