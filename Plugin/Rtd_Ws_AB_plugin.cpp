@@ -1,17 +1,29 @@
-#include <windows.h>
-#include <stdio.h>
+// Rtd_Ws_AB_plugin.cpp
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+#include <windows.h>
+#include "aflplugin.h"
+
+// Plugin Info Function (Amibroker uses this)
+extern "C" __declspec(dllexport)
+PLUGININFO* GetPluginInfo()
 {
-    switch (ul_reason_for_call)
+    static PLUGININFO pluginInfo = {
+        sizeof(PLUGININFO),
+        "WsRTD Plugin",     // Name shown in AmiBroker
+        "1.0",              // Version
+        "OpenAI GPT Plugin" // Author
+    };
+    return &pluginInfo;
+}
+
+// Dummy RTD thread (AmiBroker calls this when plugin is loaded)
+extern "C" __declspec(dllexport)
+DWORD WINAPI RTDServerThread(LPVOID lpParameter)
+{
+    // Example: just sleep forever (actual pipe reading code will go here)
+    while (true)
     {
-    case DLL_PROCESS_ATTACH:
-        MessageBoxA(0, "DLL Loaded Successfully!", "RTD Plugin", MB_OK);
-        break;
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
+        Sleep(1000);  // Idle loop
     }
-    return TRUE;
+    return 0;
 }
